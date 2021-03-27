@@ -15,7 +15,7 @@ class PortScanner():
     """
     def __init__(self, **args):
         if "host" in args:
-            self.host = host
+            self.host = args['host']
         else:
             self.host = gethostbyname(gethostname())
 
