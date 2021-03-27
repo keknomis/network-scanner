@@ -32,7 +32,10 @@ class PortScanner():
         else:
             self.threads = 32
 
-        self.openPorts = []
+        self.openPorts = dict()
+        self._portStatus = {"open": 1, "closed" : 0, "error": -1, "unknown": None}
+        for i in range(1, 65535):
+            self.openPorts[i] = self._portStatus["unknown"]
 
     def portIsOpen(self, host, port):
         """
@@ -42,18 +45,17 @@ class PortScanner():
         try:
             Socket.connect((host, port))
         except ConnectionRefusedError:
-            return False
+            return "closed"
         except:
-            print("ERROR")
-            return False
-        return True
+            return "error"
+        return "open"
 
     # helper function for multithreading
     def portScan(self, host, ports):
         while ports:
             port = ports.pop(0)
-            if self.portIsOpen(host, port):
-                self.openPorts.append(port)
+            status = self.portIsOpen(host, port)
+            self.openPorts[port] = self._portStatus[status]
 
     # scans ports in range, uses multithreading
     def portScanner(self, host, startPort, endPort, threads):
@@ -80,6 +82,5 @@ class PortScanner():
             endPort = self.endPort
         if threads is None:
             threads = self.threads
-        self.openPorts = []
         self.portScanner(host, startPort, endPort, threads)
         return self.openPorts
