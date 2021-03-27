@@ -33,9 +33,10 @@ class PortScanner():
             self.threads = 32
 
         self.openPorts = dict()
-        self._portStatus = {"open": 1, "closed" : 0, "error": -1, "unknown": None}
         for i in range(1, 65535):
-            self.openPorts[i] = self._portStatus["unknown"]
+            self.openPorts[i] = "unknown"
+        self.changes = []
+        self.logfile = ".logfile.log"
 
     def portIsOpen(self, host, port):
         """
@@ -55,11 +56,22 @@ class PortScanner():
         while ports:
             port = ports.pop(0)
             status = self.portIsOpen(host, port)
-            self.openPorts[port] = self._portStatus[status]
+            oldStatus = self.openPorts[port]
+            if status != oldStatus:
+                self.changes.append(f"Port {port} changed from {oldStatus} to {status}")
+            self.openPorts[port] = status
 
     # scans ports in range, uses multithreading
     def portScanner(self, host, startPort, endPort, threads):
         ports = list(range(startPort, endPort+1))
+        threads = [threading.Thread(target=self.portScan, args = (host, ports)) for _ in range(threads)]
+        for thread in threads:
+            thread.start()
+        for thread in threads:
+            thread.join()
+
+    def portScannerSelected(self, host, ports):
+        "like portScanner, but scans selected ports from {ports} list, not a range of ports"
         threads = [threading.Thread(target=self.portScan, args = (host, ports)) for _ in range(threads)]
         for thread in threads:
             thread.start()
@@ -83,4 +95,20 @@ class PortScanner():
         if threads is None:
             threads = self.threads
         self.portScanner(host, startPort, endPort, threads)
+
+        # update log
+        # get previous log
+        oldlines = []
+        with open(self.logfile, "r") as log:
+            oldlines = []
+            for line in log:
+                oldlines.append(line)
+        # clear the log, write the changes first, previous log after that
+        with open(self.logfile, "w") as log:
+            for line in self.changes:
+                print(line)
+                log.write(line)
+                log.write("\n")
+            for line in oldlines[::-1]:
+                log.write(line)
         return self.openPorts
