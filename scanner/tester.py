@@ -1,6 +1,8 @@
-import threadedScanner
+import scanner
 
 if __name__=="__main__":
-    Scanner = threadedScanner.PortScanner()
+    Scanner = scanner.PortScanner()
     Scanner.scan()
-    print(Scanner.openPorts)
+    for port in Scanner.openPorts:
+        # print(port, Scanner.openPorts[port])
+        pass

@@ -1,6 +1,8 @@
 import sys
 from socket import socket, gethostname, gethostbyname
 import threading
+from datetime import datetime
+import os
 
 class PortScanner():
     """
@@ -33,10 +35,12 @@ class PortScanner():
             self.threads = 32
 
         self.openPorts = dict()
-        for i in range(1, 65535):
+        for i in range(1, 65535+1):
             self.openPorts[i] = "unknown"
         self.changes = []
         self.logfile = ".logfile.log"
+        if not os.path.isfile(self.logfile):
+            open(self.logfile, "a").close()
 
     def portIsOpen(self, host, port):
         """
@@ -57,21 +61,16 @@ class PortScanner():
             port = ports.pop(0)
             status = self.portIsOpen(host, port)
             oldStatus = self.openPorts[port]
-            if status != oldStatus:
-                self.changes.append(f"Port {port} changed from {oldStatus} to {status}")
+            if status != oldStatus and (oldStatus != "unknown" or status != "closed"):
+                self.changes.append(f"{datetime.utcnow().strftime('%Y/%m/%d %H:%M:%S.%f')[:-3].ljust(23, '0')} Port {port:5} changed from {oldStatus} to {status}")
             self.openPorts[port] = status
 
     # scans ports in range, uses multithreading
-    def portScanner(self, host, startPort, endPort, threads):
-        ports = list(range(startPort, endPort+1))
-        threads = [threading.Thread(target=self.portScan, args = (host, ports)) for _ in range(threads)]
-        for thread in threads:
-            thread.start()
-        for thread in threads:
-            thread.join()
-
-    def portScannerSelected(self, host, ports):
-        "like portScanner, but scans selected ports from {ports} list, not a range of ports"
+    def portScanner(self, host, startPort, endPort, threads, selected=None):
+        if selected is not None:
+            ports = selected
+        else:
+            ports = list(range(startPort, endPort+1))
         threads = [threading.Thread(target=self.portScan, args = (host, ports)) for _ in range(threads)]
         for thread in threads:
             thread.start()
@@ -79,7 +78,7 @@ class PortScanner():
             thread.join()
 
     # def scan(self, host=self.host, startPort=self.startPort, endPort=self.endPort, threads=self.threads):
-    def scan(self, host=None, startPort=None, endPort=None, threads=None):
+    def scan(self, host=None, startPort=None, endPort=None, threads=None, selected=None):
         """
         scan ports in range {startPort}, {endPort} on host
         default {host} is local machine
@@ -94,8 +93,13 @@ class PortScanner():
             endPort = self.endPort
         if threads is None:
             threads = self.threads
-        self.portScanner(host, startPort, endPort, threads)
+        if selected is not None:
+            self.changes.append(f"{datetime.utcnow().strftime('%Y/%m/%d %H:%M:%S.%f')[:-3].ljust(23, '0')} Started port scanning on {selected}")
+        else:
+            self.changes.append(f"{datetime.utcnow().strftime('%Y/%m/%d %H:%M:%S.%f')[:-3].ljust(23, '0')} Started port scanning on range {startPort} - {endPort}")
 
+        self.portScanner(host, startPort, endPort, threads, selected=selected)
+        self.changes.append(f"{datetime.utcnow().strftime('%Y/%m/%d %H:%M:%S.%f')[:-3].ljust(23, '0')} Ended port scanning")
         # update log
         # get previous log
         oldlines = []
@@ -105,10 +109,10 @@ class PortScanner():
                 oldlines.append(line)
         # clear the log, write the changes first, previous log after that
         with open(self.logfile, "w") as log:
-            for line in self.changes:
-                print(line)
+            for line in self.changes[::-1]:
                 log.write(line)
                 log.write("\n")
-            for line in oldlines[::-1]:
+            for line in oldlines:
                 log.write(line)
+
         return self.openPorts
