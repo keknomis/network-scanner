@@ -2,6 +2,9 @@ import sys
 from socket import socket, gethostname, gethostbyname
 
 def portIsOpen(host, port):
+    """
+    return True if {port} on {host} is open, otherwise return False
+    """
     Socket = socket()
     try:
         Socket.connect((host, port))
@@ -13,6 +16,12 @@ def portIsOpen(host, port):
     return True
 
 def portScanner(host=gethostbyname(gethostname()), startPort=1, endPort=65535):
+    """
+    scan ports in range {startPort}, {endPort} on host
+    default {host} is local machine
+    default {startPort} is 1
+    default {endPort} is 65535
+    """
     for port in range(startPort, endPort+1):
         if portIsOpen(host, port):
             print(f"Port {port} is open.")
