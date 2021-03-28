@@ -13,7 +13,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
-        MainWindow.setObjectName("MainWindow")
+        MainWindow.setObjectName("Port Scanner")
         MainWindow.resize(385, 468)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
@@ -51,10 +51,11 @@ class Ui_MainWindow(object):
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
+        name = "Port Scanner"
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
-        self.scanPortRangeLabel.setText(_translate("MainWindow", "Port scan range"))
-        self.scanPortRangeLabel_2.setText(_translate("MainWindow", "Start range"))
-        self.scanPortRangeLabel_3.setText(_translate("MainWindow", "End range"))
-        self.pushButton.setText(_translate("MainWindow", "Scan"))
-        self.scanPortLabel.setText(_translate("MainWindow", "Scan ports"))
+        MainWindow.setWindowTitle(_translate(name, name))
+        self.scanPortRangeLabel.setText(_translate(name, "Port scan range"))
+        self.scanPortRangeLabel_2.setText(_translate(name, "Start range"))
+        self.scanPortRangeLabel_3.setText(_translate(name, "End range"))
+        self.pushButton.setText(_translate(name, "Scan"))
+        self.scanPortLabel.setText(_translate(name, "Scan ports"))
