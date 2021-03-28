@@ -7,7 +7,8 @@ import portAnalyzer
 A = scanner.PortScanner()
 window = Tk()
 window.title("ScannerGUI")
-window.geometry('900x700')
+window.geometry('1200x850')
+window.option_add("*Font", '14')
 window.configure(background='black')
 window.resizable(0,0)
 lbl = Label(window, text="Ports", bg = 'black', fg = 'blue')
@@ -17,7 +18,7 @@ txt.grid(column = 1, row=0)
 curr = scrolledtext.ScrolledText(window, bg = 'black', fg = 'green', height = 0)
 statusWindow = Text(window, bg = 'black', fg = 'green', height = 0)
 statusWindow2 = Text(window, bg = 'black', fg = 'green', height = 0)
-curr.config(height = 40, width = 120)
+curr.config(height = 40, width = 100)
 curr.grid(column=1, row=3)
 
 

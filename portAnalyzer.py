@@ -1,6 +1,6 @@
 knownPorts = {
 21 : "FTP",
-22 : "SSH",
+22 : "SSH, check that root access is disabled",
 23 : "telnet",
 25 : "SMTP",
 53 : "DNS",
