@@ -25,6 +25,7 @@ curr.grid(column=1, row=3)
 def clicked():
     global counter, curr
     ports =  txt.get().strip()
+    port = None
     selected = None
     startPort = None
     if len(ports) == 0:
@@ -47,9 +48,11 @@ def clicked():
     statusWindow2.config(height = 1, width = 62)
     statusWindow2.grid(column = 1, row = 2)
 
-    if selected or startPort:
+    if selected or startPort or port:
         if startPort:
             selected = list(range(startPort, endPort+1))
+        if port:
+            selected = [port]
         for port in selected:
             status = openPorts[port]
             curr.config(state=NORMAL)
