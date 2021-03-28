@@ -7,19 +7,35 @@ import portAnalyzer
 A = scanner.PortScanner()
 window = Tk()
 window.title("ScannerGUI")
-window.geometry('1200x850')
-window.option_add("*Font", '14')
-window.configure(background='black')
-window.resizable(0,0)
-lbl = Label(window, text="Ports", bg = 'black', fg = 'blue')
+window.geometry('1320x900')
+window.option_add("*Font", '16')
+window.configure(background='#0e1111')
+window.resizable(0, 0)
+lbl = Label(window, text="Ports", bg='#0e1111', fg='blue')
 lbl.grid(column=0, row=0)
-txt = Entry(window,width=100, bg = 'black', fg = 'yellow', insertbackground = 'white')
-txt.grid(column = 1, row=0)
-curr = scrolledtext.ScrolledText(window, bg = 'black', fg = 'green', height = 0)
-statusWindow = Text(window, bg = 'black', fg = 'green', height = 0)
-statusWindow2 = Text(window, bg = 'black', fg = 'green', height = 0)
-curr.config(height = 40, width = 100)
-curr.grid(column=1, row=3)
+txt = Entry(window, width=100, bg='#0e1111', fg='yellow', insertbackground='white')
+txt.grid(column=1, row=0)
+curr = scrolledtext.ScrolledText(window, bg='#0e1111', fg='green', height=0)
+statusWindow = Text(window, bg='#0e1111', fg='green', height=0)
+statusWindow2 = Text(window, bg='#0e1111', fg='green', height=0)
+curr.config(height=40, width=100)
+curr.grid(column=1, row=2)
+
+
+
+lbl3 = Label(window, text="Usage: \n "
+                          "- To scan ALL ports simply \n"
+                          " press Start scanning button \n"
+                          "\n"
+                          "- To scan SINGLE port \n"
+                          "type in the port number \n "
+                          "\n"
+                          "- To scan RANGE of ports \n"
+                          "Type the start port number \n"
+                          "insert - (minus) as a delimiter \n"
+                          "and type the end port number", bg='#0e1111', fg='blue')
+
+lbl3.grid(column=2, row=2)
 
 
 def clicked():
