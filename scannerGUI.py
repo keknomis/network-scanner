@@ -52,7 +52,8 @@ def clicked():
         counter = 0
         if status == "open":
             curr.config(state = NORMAL)
-            if service:=portAnalyzer.portAnalyzer(port):
+            service = portAnalyzer.portAnalyzer(port)
+            if service:
                 curr.insert(END, f"port {port} is open -> running {service}\n")
             else:
                 curr.insert(END, f"port {port} is open -> unknown service\n")
