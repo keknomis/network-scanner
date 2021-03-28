@@ -22,21 +22,22 @@ curr.config(height = 40, width = 100)
 curr.grid(column=1, row=3)
 
 
-
 def clicked():
     global counter, curr
     ports =  txt.get().strip()
+    selected = None
+    startPort = None
     if len(ports) == 0:
         A.scan()
     elif "," in ports:
         selected = ports.split(",")
-        selecte = [int(sel.split()) for sel in selected]
+        selected = [int(sel.strip()) for sel in selected]
         A.scan(selected=selected)
     elif "-" in ports:
         startPort, endPort = int(ports.split("-")[0]), int(ports.split("-")[1])
         A.scan(startPort=startPort, endPort=endPort)
     else:
-        port = int(ports.split())
+        port = int(ports.strip())
         A.scan(selected=[port])
 
     openPorts = A.openPorts
@@ -46,24 +47,40 @@ def clicked():
     statusWindow2.config(height = 1, width = 62)
     statusWindow2.grid(column = 1, row = 2)
 
-    for port, status in openPorts.items():
-        links = {"", ""}
-        statusWindow.config(state = NORMAL)
-        statusWindow.insert(END, f" scanning")
-        statusWindow.config(state = DISABLED)
-        window.update()
-        statusWindow.config(state = NORMAL)
-        statusWindow.delete('1.0', END)
-        statusWindow.config(state = DISABLED)
-        counter = 0
-        if status == "open":
-            curr.config(state = NORMAL)
-            service = portAnalyzer.portAnalyzer(port)
-            if service:
-                curr.insert(END, f"port {port} is open -> running {service}\n")
+    if selected or startPort:
+        if startPort:
+            selected = list(range(startPort, endPort+1))
+        for port in selected:
+            status = openPorts[port]
+            curr.config(state=NORMAL)
+            if status == "open":
+                service = portAnalyzer.portAnalyzer(port)
+                if service:
+                    curr.insert(END, f"port {port} is open -> running {service}\n")
+                else:
+                    curr.insert(END, f"port {port} is open -> unknown service\n")
             else:
-                curr.insert(END, f"port {port} is open -> unknown service\n")
+                curr.insert(END, f"port {port} is {status}\n")
             curr.config(state = DISABLED)
+    else:
+        for port, status in openPorts.items():
+            links = {"", ""}
+            statusWindow.config(state = NORMAL)
+            statusWindow.insert(END, f" scanning")
+            statusWindow.config(state = DISABLED)
+            window.update()
+            statusWindow.config(state = NORMAL)
+            statusWindow.delete('1.0', END)
+            statusWindow.config(state = DISABLED)
+            counter = 0
+            if status == "open":
+                curr.config(state = NORMAL)
+                service = portAnalyzer.portAnalyzer(port)
+                if service:
+                    curr.insert(END, f"port {port} is open -> running {service}\n")
+                else:
+                    curr.insert(END, f"port {port} is open -> unknown service\n")
+                curr.config(state = DISABLED)
 
     statusWindow.config(state = NORMAL)
     statusWindow.delete('1.0', END)
