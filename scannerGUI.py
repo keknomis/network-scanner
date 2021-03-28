@@ -1,13 +1,10 @@
 from tkinter import *
 from tkinter import messagebox
 from tkinter import scrolledtext
-import os, re
-import requests
 import scanner
 import portAnalyzer
 
 A = scanner.PortScanner()
-
 window = Tk()
 window.title("ScannerGUI")
 window.geometry('1200x800')
@@ -61,9 +58,6 @@ def clicked():
                 curr.insert(END, f"port {port} is open -> unknown service\n")
             curr.config(state = DISABLED)
 
-    # curr.config(state = NORMAL)
-    # curr.delete(str(counter+1)+".0", END)
-    # curr.config(state = DISABLED)
     statusWindow.config(state = NORMAL)
     statusWindow.delete('1.0', END)
     statusWindow.insert(END, 'DONE')
