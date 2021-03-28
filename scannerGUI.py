@@ -30,7 +30,7 @@ def clicked():
         A.scan()
     elif "," in ports:
         selected = ports.split(",")
-        selecte = [int(sel.split() for sel in selected]
+        selecte = [int(sel.split()) for sel in selected]
         A.scan(selected=selected)
     elif "-" in ports:
         startPort, endPort = int(ports.split("-")[0]), int(ports.split("-")[1])
