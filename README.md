@@ -7,4 +7,4 @@ Tkinter
 python scannerGUI.py
 
 # Logfile
-
+.logfile.log
