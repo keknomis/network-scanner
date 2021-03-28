@@ -9,9 +9,11 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-
+import scanner
 
 class Ui_MainWindow(object):
+    def __init__(self):
+        self.Scanner = scanner.PortScanner()
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("Port Scanner")
         MainWindow.resize(385, 468)
